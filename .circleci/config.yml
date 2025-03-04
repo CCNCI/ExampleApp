@@ -8,18 +8,18 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - main  # Correct indentation
 
 jobs:
   build:
-    working_directory: ~/ExampleApplication
-    docker:
+    docker:  # Ensuring the job has an execution environment
       - image: circleci/node:10.16.3
+    working_directory: ~/ExampleApplication
     steps:
       - checkout
       - run:
           name: Update npm
-          command: 'sudo npm install -g npm@5'
+          command: sudo npm install -g npm@5
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
@@ -28,4 +28,7 @@ jobs:
       - run:
           name: Run tests
           command: npm test
-      - save_cache
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
